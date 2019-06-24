@@ -35,7 +35,7 @@ export class BimObjectService {
     })
   }
 
-  getBimFileContext(bimFileId: string) {
+  getBimFileContext(bimFileId: string) : any {
     return SpinalGraphService.getChildren(bimFileId, [BIM_NODE_RELATION_NAME]).then(children => {
       if (children.length > 0)
         return children[0];

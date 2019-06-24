@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service");
 var Constants_1 = require("./Constants");
-var SceneManagerService = /** @class */ (function () {
-    function SceneManagerService() {
+var SceneHelper = /** @class */ (function () {
+    function SceneHelper() {
     }
-    SceneManagerService.initialize = function () {
+    SceneHelper.initialize = function () {
         var _this = this;
         if (this.initialized !== null) {
             return this.initialized;
@@ -24,9 +24,9 @@ var SceneManagerService = /** @class */ (function () {
         });
         return this.initialized;
     };
-    SceneManagerService.createScene = function (name, description, autoLoad) {
+    SceneHelper.createScene = function (name, description, autoLoad) {
         var _this = this;
-        return SceneManagerService.initialize().then(function () {
+        return SceneHelper.initialize().then(function () {
             var sceneId = spinal_env_viewer_graph_service_1.SpinalGraphService.createNode({
                 name: name,
                 description: description,
@@ -36,30 +36,30 @@ var SceneManagerService = /** @class */ (function () {
             return spinal_env_viewer_graph_service_1.SpinalGraphService.addChildInContext(_this.contextId, sceneId, _this.contextId, Constants_1.SCENE_RELATION_NAME, Constants_1.SCENE_RELATION_TYPE);
         });
     };
-    SceneManagerService.addModelToScene = function (sceneId, bimFileId) {
+    SceneHelper.addModelToScene = function (sceneId, bimFileId) {
         var _this = this;
-        return SceneManagerService.initialize().then(function () {
+        return SceneHelper.initialize().then(function () {
             return spinal_env_viewer_graph_service_1.SpinalGraphService.addChildInContext(sceneId, bimFileId, _this.contextId, Constants_1.PART_RELATION_NAME, Constants_1.PART_RELATION_TYPE);
         });
     };
-    SceneManagerService.getBimFilesFromScene = function (sceneId) {
-        return SceneManagerService.initialize().then(function () {
+    SceneHelper.getBimFilesFromScene = function (sceneId) {
+        return SceneHelper.initialize().then(function () {
             return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(sceneId, [Constants_1.PART_RELATION_NAME]);
         });
     };
-    SceneManagerService.getSceneFromNode = function (nodeId) {
-        return SceneManagerService.initialize().then(function () {
+    SceneHelper.getSceneFromNode = function (nodeId) {
+        return SceneHelper.initialize().then(function () {
             return spinal_env_viewer_graph_service_1.SpinalGraphService.getChildren(nodeId, [Constants_1.SCENE_RELATION_NAME]);
         });
     };
-    SceneManagerService.addSceneToNode = function (nodeId, sceneId) {
+    SceneHelper.addSceneToNode = function (nodeId, sceneId) {
         var _this = this;
-        return SceneManagerService.initialize().then(function () {
+        return SceneHelper.initialize().then(function () {
             return spinal_env_viewer_graph_service_1.SpinalGraphService.addChildInContext(nodeId, sceneId, _this.contextId, Constants_1.SCENE_RELATION_NAME, Constants_1.SCENE_RELATION_TYPE);
         });
     };
-    SceneManagerService.contextName = "Scenes";
-    SceneManagerService.type = "SpinalService";
-    return SceneManagerService;
+    SceneHelper.contextName = "Scenes";
+    SceneHelper.type = "SpinalService";
+    return SceneHelper;
 }());
-exports.SceneManagerService = SceneManagerService;
+exports.SceneHelper = SceneHelper;

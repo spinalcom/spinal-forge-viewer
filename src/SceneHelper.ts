@@ -18,7 +18,7 @@ export interface Scene {
   [key: string] : any;
 }
 
-export class SceneManagerService {
+export class SceneHelper {
   private static initialized: Promise<boolean>;
   private static context: SpinalContext;
   private static contextName: string = "Scenes";
@@ -48,7 +48,7 @@ export class SceneManagerService {
   }
 
   public static createScene(name: string, description: string, autoLoad: true): Promise<SpinalNode> {
-    return SceneManagerService.initialize().then(() => {
+    return SceneHelper.initialize().then(() => {
       const sceneId: SpinalNode = SpinalGraphService.createNode({
         name,
         description,
@@ -61,28 +61,28 @@ export class SceneManagerService {
   }
 
   public static addModelToScene(sceneId: string, bimFileId: string): Promise<SpinalNode> {
-    return SceneManagerService.initialize().then(() => {
+    return SceneHelper.initialize().then(() => {
 
       return SpinalGraphService.addChildInContext(sceneId, bimFileId, this.contextId, PART_RELATION_NAME, PART_RELATION_TYPE);
     })
   }
 
-  public static getBimFilesFromScene(sceneId: string) {
-    return SceneManagerService.initialize().then(() => {
+  public static getBimFilesFromScene(sceneId: string) : any{
+    return SceneHelper.initialize().then(() => {
       return SpinalGraphService.getChildren(sceneId, [PART_RELATION_NAME]);
 
     })
   }
 
   public static getSceneFromNode(nodeId: string) : Promise<any>{
-    return SceneManagerService.initialize().then(() => {
+    return SceneHelper.initialize().then(() => {
       return SpinalGraphService.getChildren(nodeId, [SCENE_RELATION_NAME])
 
     })
   }
 
   public static addSceneToNode(nodeId: string, sceneId: string) {
-    return SceneManagerService.initialize().then(() => {
+    return SceneHelper.initialize().then(() => {
       return SpinalGraphService.addChildInContext(nodeId, sceneId, this.contextId, SCENE_RELATION_NAME, SCENE_RELATION_TYPE);
     })
   }

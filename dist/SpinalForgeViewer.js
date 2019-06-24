@@ -53,7 +53,7 @@ var spinal_env_viewer_graph_service_1 = require("spinal-env-viewer-graph-service
 var BimObjectService_1 = require("./BimObjectService");
 var Constants_1 = require("./Constants");
 var utils_1 = require("./utils");
-var SceneManagerService_1 = require("./SceneManagerService");
+var SceneHelper_1 = require("./SceneHelper");
 var SpinalForgeViewer = /** @class */ (function (_super) {
     __extends(SpinalForgeViewer, _super);
     function SpinalForgeViewer() {
@@ -113,7 +113,7 @@ var SpinalForgeViewer = /** @class */ (function (_super) {
                     case 1:
                         node = _a.sent();
                         if (node.type === Constants_1.SCENE_TYPE) {
-                            return [2 /*return*/, SceneManagerService_1.SceneManagerService.getBimFilesFromScene(nodeId)
+                            return [2 /*return*/, SceneHelper_1.SceneHelper.getBimFilesFromScene(nodeId)
                                     .then(function (children) {
                                     var promises = [];
                                     for (var i = 0; i < children.length; i++) {
@@ -123,7 +123,7 @@ var SpinalForgeViewer = /** @class */ (function (_super) {
                                 })];
                         }
                         else
-                            return [2 /*return*/, SceneManagerService_1.SceneManagerService.getSceneFromNode(nodeId)
+                            return [2 /*return*/, SceneHelper_1.SceneHelper.getSceneFromNode(nodeId)
                                     .then(function (scene) {
                                     return _this.loadModelFromNode(scene.id);
                                 })];

@@ -4,7 +4,7 @@ import { BimObjectService } from "./BimObjectService";
 import { SCENE_TYPE } from "./Constants";
 
 import { loadModelPtr } from "./utils";
-import { SceneManagerService } from "./SceneManagerService";
+import { SceneHelper } from "./SceneHelper";
 
 export class SpinalForgeViewer extends ForgeViewer {
 
@@ -60,7 +60,7 @@ export class SpinalForgeViewer extends ForgeViewer {
     try {
       const node = await SpinalGraphService.getNodeAsync(nodeId);
       if (node.type === SCENE_TYPE) {
-        return SceneManagerService.getBimFilesFromScene(nodeId)
+        return SceneHelper.getBimFilesFromScene(nodeId)
           .then((children: any) => {
             const promises = [];
             for (let i = 0; i < children.length; i++) {
@@ -70,7 +70,7 @@ export class SpinalForgeViewer extends ForgeViewer {
 
           });
       } else
-        return SceneManagerService.getSceneFromNode(nodeId)
+        return SceneHelper.getSceneFromNode(nodeId)
           .then((scene: { id: string }) => {
             return this.loadModelFromNode(scene.id)
           })
