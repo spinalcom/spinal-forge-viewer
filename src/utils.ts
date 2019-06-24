@@ -1,7 +1,7 @@
 import {
   FileSystem,
   File,
-  Ptr, Model
+  Ptr
 } from 'spinal-core-connectorjs_type';
 
 const mapModelDictionary = new Map();

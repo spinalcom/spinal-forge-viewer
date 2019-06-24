@@ -1,12 +1,10 @@
-import Model = Autodesk.Viewing.Model;
+
 import {
   SpinalGraphService,
-  SPINAL_RELATION_LST_PTR_TYPE,
-  SpinalNode
+  SPINAL_RELATION_LST_PTR_TYPE
 } from "spinal-env-viewer-graph-service";
-import { ColorKeywords } from "three";
-import darkorchid = ColorKeywords.darkorchid;
-import chartreuse = ColorKeywords.chartreuse;
+import Model = Autodesk.Viewing.Model;
+
 
 export const BIM_NODE_RELATION_NAME: string = "hasBimNode";
 export const BIM_OBJECT_RELATION_NAME: string = "hasBimObject";
