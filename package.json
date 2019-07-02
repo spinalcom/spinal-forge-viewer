@@ -13,5 +13,8 @@
     "@types/forge-viewer": "^6.6.1",
     "@types/three": "^0.103.2",
     "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "three": "^0.105.2"
   }
 }
