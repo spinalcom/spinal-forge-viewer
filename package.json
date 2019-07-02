@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -13,9 +13,5 @@
     "@types/forge-viewer": "^6.6.1",
     "@types/three": "^0.103.2",
     "typescript": "^3.5.2"
-  },
-  "dependencies": {
-    "spinal-env-viewer-graph-service": "git+https://github.com/spinalcom/Spinal-Graph-Service.git",
-    "three": "^0.105.2"
   }
 }
