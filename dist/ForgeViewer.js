@@ -69,6 +69,8 @@ var ForgeViewer = /** @class */ (function () {
             _this.viewer.loadModel(path, option, function (m) {
                 // @ts-ignore
                 _this.models[m.id] = m;
+                //TODO change to wait geometry to be loaded
+                _this.fitToView([1], m, true);
                 resolve(m);
             }, reject);
         });
@@ -166,7 +168,7 @@ var ForgeViewer = /** @class */ (function () {
     };
     ForgeViewer.prototype.hide = function (dbids, model) {
         // @ts-ignore
-        this.viewer.show(dbids, model);
+        this.viewer.hide(dbids, model);
     };
     ForgeViewer.prototype.togglevisibility = function (dbid, model) {
         // @ts-ignore

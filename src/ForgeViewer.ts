@@ -87,12 +87,14 @@ export class ForgeViewer {
   }
 
   loadModel(path: string, option = {}): Promise<Model> {
-    return new Promise((resolve, reject) => {
 
+    return new Promise((resolve, reject) => {
       // @ts-ignore
       this.viewer.loadModel(path, option, (m: Model) => {
         // @ts-ignore
         this.models[m.id] = m;
+        //TODO change to wait geometry to be loaded
+        this.fitToView([1], m, true);
         resolve(m);
       }, reject)
     })
@@ -177,12 +179,12 @@ export class ForgeViewer {
 
   toggleSelect(dbid: number[], model: Model, selectionType: number = SelectionMode.REGULAR) {
     // @ts-ignore
-    this.viewer.toggleSelect(dbid, model, selectionType)
+    this.viewer.toggleSelect(dbid, model, selectionType);
   }
 
   select(dbid: number, model: Model, selectionType: number = SelectionMode.REGULAR) {
     // @ts-ignore
-    this.viewer.select(dbid, model, selectionType)
+    this.viewer.select(dbid, model, selectionType);
   }
 
   clearSelection() {
@@ -211,7 +213,7 @@ export class ForgeViewer {
   hide(dbids: number[], model: Model) {
 
     // @ts-ignore
-    this.viewer.show(dbids, model)
+    this.viewer.hide(dbids, model)
   }
 
   togglevisibility(dbid: number[], model: Model) {
