@@ -1,5 +1,4 @@
 "use strict";
-/*global Autodesk*/
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = require("three");
 var SelectionMode = Autodesk.Viewing.SelectionMode;
@@ -216,6 +215,9 @@ var ForgeViewer = /** @class */ (function () {
         this.viewer.fitToView(dbIds, model, immediate);
     };
     ForgeViewer.prototype.setThemingColor = function (dbId, color, model, recursive) {
+        color.setX(color.x > 1 ? color.x / 255 : color.x);
+        color.setY(color.y > 1 ? color.y / 255 : color.y);
+        color.setY(color.z > 1 ? color.z / 255 : color.z);
         // @ts-ignore
         this.viewer.setThemingColor(dbId, color, model, recursive);
     };

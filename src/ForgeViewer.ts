@@ -1,4 +1,3 @@
-/*global Autodesk*/
 
 import * as THREE from "three";
 import GuiViewer3D = Autodesk.Viewing.Private.GuiViewer3D;
@@ -56,7 +55,6 @@ export class ForgeViewer {
       this.viewer = new Autodesk.Viewing.Viewer3D(this.viewerContainer, {});
     else
       this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(this.viewerContainer, {});
-
   }
 
   start(path: string, interactive: boolean = true): Promise<Model> {
@@ -278,6 +276,10 @@ export class ForgeViewer {
   }
 
   setThemingColor(dbId: number[], color: THREE.Vector4, model: Model, recursive: boolean) {
+
+    color.setX(color.x > 1 ? color.x/255 : color.x);
+    color.setY(color.y > 1 ? color.y/255 : color.y);
+    color.setY(color.z > 1 ? color.z/255 : color.z);
     // @ts-ignore
     this.viewer.setThemingColor(dbId, color, model, recursive)
   }
@@ -285,7 +287,6 @@ export class ForgeViewer {
   clearThermingColor(model : Model) {
     this.viewer.clearThemingColors(model);
   }
-
 
   hideModel(modelId : number){
     this.viewer.hideModel(modelId);
