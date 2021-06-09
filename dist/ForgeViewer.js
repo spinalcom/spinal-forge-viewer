@@ -1,4 +1,27 @@
 "use strict";
+/*
+ * Copyright 2021 SpinalCom - www.spinalcom.com
+ *
+ * This file is part of SpinalCore.
+ *
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ *
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ *
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 var THREE = require("three");
 var SelectionMode = Autodesk.Viewing.SelectionMode;
@@ -25,7 +48,7 @@ var ForgeViewer = /** @class */ (function () {
         };
         this.viewerInitialized = new Promise(function (resolve) {
             Autodesk.Viewing.Initializer(options, function () {
-                resolve();
+                resolve(true);
             });
         });
         return this.viewerInitialized;
@@ -64,13 +87,19 @@ var ForgeViewer = /** @class */ (function () {
         var _this = this;
         if (option === void 0) { option = {}; }
         return new Promise(function (resolve, reject) {
+            var m = undefined;
+            var fn = function (e) {
+                if (m && e.model.id === m.id) {
+                    _this.viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+                    _this.fitToView([1], m, true);
+                    resolve(m);
+                }
+            };
+            _this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
             // @ts-ignore
-            _this.viewer.loadModel(path, option, function (m) {
-                // @ts-ignore
+            _this.viewer.loadModel(path, option, function (model) {
+                m = model;
                 _this.models[m.id] = m;
-                //TODO change to wait geometry to be loaded
-                _this.fitToView([1], m, true);
-                resolve(m);
             }, reject);
         });
     };

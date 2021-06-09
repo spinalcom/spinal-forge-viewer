@@ -1,3 +1,26 @@
+/*
+ * Copyright 2021 SpinalCom - www.spinalcom.com
+ * 
+ * This file is part of SpinalCore.
+ * 
+ * Please read all of the following terms and conditions
+ * of the Free Software license Agreement ("Agreement")
+ * carefully.
+ * 
+ * This Agreement is a legally binding contract between
+ * the Licensee (as defined below) and SpinalCom that
+ * sets forth the terms and conditions that govern your
+ * use of the Program. By installing and/or using the
+ * Program, you agree to abide by all the terms and
+ * conditions stated or referenced herein.
+ * 
+ * If you do not agree to abide by these terms and
+ * conditions, do not demonstrate your acceptance and do
+ * not install or use the Program.
+ * You should have received a copy of the license along
+ * with this file. If not, see
+ * <http://resources.spinalcom.com/licenses.pdf>.
+ */
 
 import * as THREE from "three";
 import GuiViewer3D = Autodesk.Viewing.Private.GuiViewer3D;
@@ -16,7 +39,6 @@ export class ForgeViewer {
   public started: Promise<Model>;
   public headless: boolean;
   public currentModelId: number;
-
 
   constructor(containerElement: HTMLElement, headless: boolean = false) {
     this.viewerContainer = containerElement;
@@ -43,7 +65,7 @@ export class ForgeViewer {
 
     this.viewerInitialized = new Promise(resolve => {
       Autodesk.Viewing.Initializer(options, () => {
-        resolve()
+        resolve(true)
       })
     });
 
@@ -85,15 +107,21 @@ export class ForgeViewer {
   }
 
   loadModel(path: string, option = {}): Promise<Model> {
-
     return new Promise((resolve, reject) => {
+      let m = undefined;
+      const fn = (e: any) => {
+        if (m && e.model.id === m.id) {
+          this.viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+          this.fitToView([1], m, true);
+          resolve(m);
+        }
+      }
+      this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+  
       // @ts-ignore
-      this.viewer.loadModel(path, option, (m: Model) => {
-        // @ts-ignore
+      this.viewer.loadModel(path, option, (model: Model) => {
+        m = model;
         this.models[m.id] = m;
-        //TODO change to wait geometry to be loaded
-        this.fitToView([1], m, true);
-        resolve(m);
       }, reject)
     })
   }
