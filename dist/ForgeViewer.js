@@ -91,7 +91,6 @@ var ForgeViewer = /** @class */ (function () {
             var fn = function (e) {
                 if (m && e.model.id === m.id) {
                     _this.viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
-                    _this.fitToView([1], m, true);
                     resolve(m);
                 }
             };

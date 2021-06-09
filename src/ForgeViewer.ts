@@ -112,7 +112,6 @@ export class ForgeViewer {
       const fn = (e: any) => {
         if (m && e.model.id === m.id) {
           this.viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
-          this.fitToView([1], m, true);
           resolve(m);
         }
       }
