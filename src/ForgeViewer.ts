@@ -36,7 +36,7 @@ export class ForgeViewer {
   public viewer: GuiViewer3D | Viewer3D;
   public models: { [key: number]: Model };
   public viewerInitialized: Promise<boolean>;
-  public started: Promise<Model>;
+  public started: Promise<any>;
   public headless: boolean;
   public currentModelId: number;
 
@@ -79,34 +79,38 @@ export class ForgeViewer {
       this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(this.viewerContainer, {});
   }
 
-  start(path: string, interactive: boolean = true): Promise<Model> {
+  start(
+    // path: string, interactive: boolean = true
+  ): Promise<any> {
     if (this.started !== null)
       return this.started;
     this.createViewer();
+    this.started = this.initializeViewer()
 
-    this.started = new Promise((resolve, reject) => {
-      this.initializeViewer()
-        .then(() => {
-          // @ts-ignore
-          this.viewer.start(path, {}, (m: Model) => {
 
-            if (interactive) {
+    // this.started = new Promise((resolve, reject) => {
+    //   this.initializeViewer()
+    //     .then(() => {
+    //       // @ts-ignore
+    //       this.viewer.start(path, {}, (m: Model) => {
 
-              // @ts-ignore
-              const id = m.id;
-              this.currentModelId = id;
-              // @ts-ignore
-              this.models[id] = m;
-            }
-            resolve(m);
-          }, reject)
-        })
-    });
+    //         if (interactive) {
+
+    //           // @ts-ignore
+    //           const id = m.id;
+    //           this.currentModelId = id;
+    //           // @ts-ignore
+    //           this.models[id] = m;
+    //         }
+    //         resolve(m);
+    //       }, reject)
+    //     })
+    // });
 
     return this.started;
   }
 
-  loadModel(path: string, option = {}): Promise<Model> {
+  loadModel(path: string, option = {}, start: boolean = false): Promise<Model> {
     return new Promise((resolve, reject) => {
       let m = undefined;
       const fn = (e: any) => {
@@ -116,9 +120,9 @@ export class ForgeViewer {
         }
       }
       this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
-  
+      let fct = start ? this.viewer.start : this.viewer.loadModel;
       // @ts-ignore
-      this.viewer.loadModel(path, option, (model: Model) => {
+      fct.call(this.viewer, path, option, (model: Model) => {
         m = model;
         this.models[m.id] = m;
       }, reject)
@@ -304,22 +308,22 @@ export class ForgeViewer {
 
   setThemingColor(dbId: number[], color: THREE.Vector4, model: Model, recursive: boolean) {
 
-    color.setX(color.x > 1 ? color.x/255 : color.x);
-    color.setY(color.y > 1 ? color.y/255 : color.y);
-    color.setY(color.z > 1 ? color.z/255 : color.z);
+    color.setX(color.x > 1 ? color.x / 255 : color.x);
+    color.setY(color.y > 1 ? color.y / 255 : color.y);
+    color.setY(color.z > 1 ? color.z / 255 : color.z);
     // @ts-ignore
     this.viewer.setThemingColor(dbId, color, model, recursive)
   }
 
-  clearThermingColor(model : Model) {
+  clearThermingColor(model: Model) {
     this.viewer.clearThemingColors(model);
   }
 
-  hideModel(modelId : number){
+  hideModel(modelId: number) {
     this.viewer.hideModel(modelId);
   }
 
-  showModel(modelId: number, preserveTools : boolean = false){
+  showModel(modelId: number, preserveTools: boolean = false) {
     // @ts-ignore
     this.viewer.showModel(modelId, preserveTools)
   }

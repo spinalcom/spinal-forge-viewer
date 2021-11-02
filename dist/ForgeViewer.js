@@ -23,6 +23,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ForgeViewer = void 0;
 var THREE = require("three");
 var SelectionMode = Autodesk.Viewing.SelectionMode;
 var ForgeViewer = /** @class */ (function () {
@@ -59,33 +60,35 @@ var ForgeViewer = /** @class */ (function () {
         else
             this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(this.viewerContainer, {});
     };
-    ForgeViewer.prototype.start = function (path, interactive) {
-        var _this = this;
-        if (interactive === void 0) { interactive = true; }
+    ForgeViewer.prototype.start = function (
+    // path: string, interactive: boolean = true
+    ) {
         if (this.started !== null)
             return this.started;
         this.createViewer();
-        this.started = new Promise(function (resolve, reject) {
-            _this.initializeViewer()
-                .then(function () {
-                // @ts-ignore
-                _this.viewer.start(path, {}, function (m) {
-                    if (interactive) {
-                        // @ts-ignore
-                        var id = m.id;
-                        _this.currentModelId = id;
-                        // @ts-ignore
-                        _this.models[id] = m;
-                    }
-                    resolve(m);
-                }, reject);
-            });
-        });
+        this.started = this.initializeViewer();
+        // this.started = new Promise((resolve, reject) => {
+        //   this.initializeViewer()
+        //     .then(() => {
+        //       // @ts-ignore
+        //       this.viewer.start(path, {}, (m: Model) => {
+        //         if (interactive) {
+        //           // @ts-ignore
+        //           const id = m.id;
+        //           this.currentModelId = id;
+        //           // @ts-ignore
+        //           this.models[id] = m;
+        //         }
+        //         resolve(m);
+        //       }, reject)
+        //     })
+        // });
         return this.started;
     };
-    ForgeViewer.prototype.loadModel = function (path, option) {
+    ForgeViewer.prototype.loadModel = function (path, option, start) {
         var _this = this;
         if (option === void 0) { option = {}; }
+        if (start === void 0) { start = false; }
         return new Promise(function (resolve, reject) {
             var m = undefined;
             var fn = function (e) {
@@ -95,8 +98,9 @@ var ForgeViewer = /** @class */ (function () {
                 }
             };
             _this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+            var fct = start ? _this.viewer.start : _this.viewer.loadModel;
             // @ts-ignore
-            _this.viewer.loadModel(path, option, function (model) {
+            fct.call(_this.viewer, path, option, function (model) {
                 m = model;
                 _this.models[m.id] = m;
             }, reject);

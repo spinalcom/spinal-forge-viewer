@@ -13,15 +13,15 @@ export declare class ForgeViewer {
         [key: number]: Model;
     };
     viewerInitialized: Promise<boolean>;
-    started: Promise<Model>;
+    started: Promise<any>;
     headless: boolean;
     currentModelId: number;
     constructor(containerElement: HTMLElement, headless?: boolean);
     getModel(modelId: number): Model;
     initializeViewer(): Promise<boolean>;
     createViewer(): void;
-    start(path: string, interactive?: boolean): Promise<Model>;
-    loadModel(path: string, option?: {}): Promise<Model>;
+    start(): Promise<any>;
+    loadModel(path: string, option?: {}, start?: boolean): Promise<Model>;
     unLoadModel(model: Model): boolean;
     finish(): void;
     viewerEvent(event: string): Promise<any>;
