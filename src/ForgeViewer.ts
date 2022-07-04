@@ -1,19 +1,19 @@
 /*
  * Copyright 2021 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -22,7 +22,7 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import * as THREE from "three";
+import * as THREE from 'three';
 import GuiViewer3D = Autodesk.Viewing.Private.GuiViewer3D;
 import Viewer3D = Autodesk.Viewing.Viewer3D;
 import Model = Autodesk.Viewing.Model;
@@ -54,19 +54,18 @@ export class ForgeViewer {
   }
 
   initializeViewer() {
-    if (this.viewerInitialized !== null)
-      return this.viewerInitialized;
+    if (this.viewerInitialized !== null) return this.viewerInitialized;
 
     const options = {
       env: 'Local',
-      docid: "",
-      useADP: false
+      docid: '',
+      useADP: false,
     };
 
-    this.viewerInitialized = new Promise(resolve => {
+    this.viewerInitialized = new Promise((resolve) => {
       Autodesk.Viewing.Initializer(options, () => {
-        resolve(true)
-      })
+        resolve(true);
+      });
     });
 
     return this.viewerInitialized;
@@ -76,37 +75,16 @@ export class ForgeViewer {
     if (this.headless)
       this.viewer = new Autodesk.Viewing.Viewer3D(this.viewerContainer, {});
     else
-      this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(this.viewerContainer, {});
+      this.viewer = new Autodesk.Viewing.Private.GuiViewer3D(
+        this.viewerContainer,
+        {}
+      );
   }
 
-  start(
-    // path: string, interactive: boolean = true
-  ): Promise<any> {
-    if (this.started !== null)
-      return this.started;
+  start(): Promise<any> {
+    if (this.started !== null) return this.started;
     this.createViewer();
-    this.started = this.initializeViewer()
-
-
-    // this.started = new Promise((resolve, reject) => {
-    //   this.initializeViewer()
-    //     .then(() => {
-    //       // @ts-ignore
-    //       this.viewer.start(path, {}, (m: Model) => {
-
-    //         if (interactive) {
-
-    //           // @ts-ignore
-    //           const id = m.id;
-    //           this.currentModelId = id;
-    //           // @ts-ignore
-    //           this.models[id] = m;
-    //         }
-    //         resolve(m);
-    //       }, reject)
-    //     })
-    // });
-
+    this.started = this.initializeViewer();
     return this.started;
   }
 
@@ -115,22 +93,30 @@ export class ForgeViewer {
       let m = undefined;
       const fn = (e: any) => {
         if (m && e.model.id === m.id) {
-          this.viewer.removeEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
+          this.viewer.removeEventListener(
+            Autodesk.Viewing.GEOMETRY_LOADED_EVENT,
+            fn
+          );
           resolve(m);
         }
-      }
+      };
       this.viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, fn);
       let fct = start ? this.viewer.start : this.viewer.loadModel;
       // @ts-ignore
-      fct.call(this.viewer, path, option, (model: Model) => {
-        m = model;
-        this.models[m.id] = m;
-      }, reject)
-    })
+      fct.call(
+        this.viewer,
+        path,
+        option,
+        (model: Model) => {
+          m = model;
+          this.models[m.id] = m;
+        },
+        reject
+      );
+    });
   }
 
   unLoadModel(model: Model): boolean {
-
     // @ts-ignore
     if (this.models.hasOwnProperty(model.id)) {
       // @ts-ignore
@@ -144,28 +130,23 @@ export class ForgeViewer {
   }
 
   finish(): void {
-    if (this.viewer)
-      this.viewer.finish()
+    if (this.viewer) this.viewer.finish();
   }
 
   viewerEvent(event: string): Promise<any> {
-
     return new Promise((resolve, reject) => {
-
       const handler = (e: any) => {
         this.viewer.removeEventListener(event, handler);
-        resolve(e)
+        resolve(e);
       };
-
-      this.viewer.addEventListener(event, handler)
-
-    })
+      this.viewer.addEventListener(event, handler);
+    });
   }
 
   resize(): void {
     // @ts-ignore
     if (this.viewer && this.viewer.impl) {
-      this.viewer.resize()
+      this.viewer.resize();
     }
   }
 
@@ -182,18 +163,34 @@ export class ForgeViewer {
     return this.viewer.unloadExtension(extensionId);
   }
 
-  getProperties(dbid: number, modelId: number, onSuccessCallback: (r: PropertyResult) => void, onErrorCallBack: (err: any) => void) {
+  getProperties(
+    dbid: number,
+    modelId: number,
+    onSuccessCallback: (r: PropertyResult) => void,
+    onErrorCallBack: (err: any) => void
+  ) {
     if (!this.models.hasOwnProperty(modelId)) {
-      return onErrorCallBack("Not found");
+      return onErrorCallBack('Not found');
     }
-    return this.models[modelId].getProperties(dbid, onSuccessCallback, onErrorCallBack);
+    return this.models[modelId].getProperties(
+      dbid,
+      onSuccessCallback,
+      onErrorCallBack
+    );
   }
 
-  getObjectTree(onSuccessCallback: (result: InstanceTree) => void, onErrorCallback: (err: any) => void, modelId: number = this.currentModelId) {
+  getObjectTree(
+    onSuccessCallback: (result: InstanceTree) => void,
+    onErrorCallback: (err: any) => void,
+    modelId: number = this.currentModelId
+  ) {
     if (!this.models.hasOwnProperty(modelId)) {
-      return onErrorCallback("Not Found");
+      return onErrorCallback('Not Found');
     }
-    return this.models[modelId].getObjectTree(onSuccessCallback, onErrorCallback)
+    return this.models[modelId].getObjectTree(
+      onSuccessCallback,
+      onErrorCallback
+    );
   }
 
   getHiddenNodes() {
@@ -206,12 +203,20 @@ export class ForgeViewer {
     this.viewer.isolate(node, model);
   }
 
-  toggleSelect(dbid: number[], model: Model, selectionType: number = SelectionMode.REGULAR) {
+  toggleSelect(
+    dbid: number[],
+    model: Model,
+    selectionType: number = SelectionMode.REGULAR
+  ) {
     // @ts-ignore
     this.viewer.toggleSelect(dbid, model, selectionType);
   }
 
-  select(dbid: number, model: Model, selectionType: number = SelectionMode.REGULAR) {
+  select(
+    dbid: number,
+    model: Model,
+    selectionType: number = SelectionMode.REGULAR
+  ) {
     // @ts-ignore
     this.viewer.select(dbid, model, selectionType);
   }
@@ -222,7 +227,7 @@ export class ForgeViewer {
 
   getAggregateSelection(callback: (selections: any) => {}) {
     // @ts-ignore
-    this.viewer.getAggregateSelection(callback)
+    this.viewer.getAggregateSelection(callback);
   }
 
   /**
@@ -234,15 +239,13 @@ export class ForgeViewer {
   }
 
   show(dbids: number[], model: Model) {
-
     // @ts-ignore
     this.viewer.show(dbids, model);
   }
 
   hide(dbids: number[], model: Model) {
-
     // @ts-ignore
-    this.viewer.hide(dbids, model)
+    this.viewer.hide(dbids, model);
   }
 
   togglevisibility(dbid: number[], model: Model) {
@@ -250,42 +253,48 @@ export class ForgeViewer {
     this.viewer.toggleVisibility(dbid, model);
   }
 
-  search(text: string, onSuccessCallback: () => void, onErrorCallback: () => void, attributeNames: Array<string>, modelId: number = this.currentModelId) {
+  search(
+    text: string,
+    onSuccessCallback: () => void,
+    onErrorCallback: () => void,
+    attributeNames: Array<string>,
+    modelId: number = this.currentModelId
+  ) {
     if (!this.models.hasOwnProperty(modelId)) {
       return onErrorCallback();
     }
 
-    return this.models[modelId].search(text, onSuccessCallback, onErrorCallback, attributeNames)
+    return this.models[modelId].search(
+      text,
+      onSuccessCallback,
+      onErrorCallback,
+      attributeNames
+    );
   }
 
   scaleModel(model: Model, scale: number) {
-
     const fragCount = model.getFragmentList().fragments.fragId2dbId.length;
 
     //fragIds range from 0 to fragCount-1
     for (var fragId = 0; fragId < fragCount; ++fragId) {
-
       // @ts-ignore
-      const fragProxy = this.viewer.impl.getFragmentProxy(
-        model, fragId);
+      const fragProxy = this.viewer.impl.getFragmentProxy(model, fragId);
 
       fragProxy.getAnimTransform();
 
-      fragProxy.scale = new THREE.Vector3(
-        scale, scale, scale);
+      fragProxy.scale = new THREE.Vector3(scale, scale, scale);
 
-      fragProxy.updateAnimTransform()
+      fragProxy.updateAnimTransform();
     }
 
     // @ts-ignore
-    this.viewer.impl.sceneUpdated(true)
+    this.viewer.impl.sceneUpdated(true);
   }
 
   setCurrentModel(model: Model): boolean {
     // @ts-ignore
     const id = model.id;
-    if (!this.models.hasOwnProperty(id))
-      return false;
+    if (!this.models.hasOwnProperty(id)) return false;
 
     this.currentModelId = id;
     // @ts-ignore
@@ -301,18 +310,21 @@ export class ForgeViewer {
    * @param immediate  true to avoid the default transition.
    */
   fitToView(dbIds: number[], model: Model, immediate: boolean = false) {
-
     // @ts-ignore
     this.viewer.fitToView(dbIds, model, immediate);
   }
 
-  setThemingColor(dbId: number[], color: THREE.Vector4, model: Model, recursive: boolean) {
-
+  setThemingColor(
+    dbId: number[],
+    color: THREE.Vector4,
+    model: Model,
+    recursive: boolean
+  ) {
     color.setX(color.x > 1 ? color.x / 255 : color.x);
     color.setY(color.y > 1 ? color.y / 255 : color.y);
     color.setY(color.z > 1 ? color.z / 255 : color.z);
     // @ts-ignore
-    this.viewer.setThemingColor(dbId, color, model, recursive)
+    this.viewer.setThemingColor(dbId, color, model, recursive);
   }
 
   clearThermingColor(model: Model) {
@@ -325,10 +337,9 @@ export class ForgeViewer {
 
   showModel(modelId: number, preserveTools: boolean = false) {
     // @ts-ignore
-    this.viewer.showModel(modelId, preserveTools)
+    this.viewer.showModel(modelId, preserveTools);
   }
   explode(scale: number) {
     this.viewer.explode(scale);
   }
-
 }
